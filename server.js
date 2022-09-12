@@ -35,24 +35,35 @@ const server = http.createServer((req, res) => {
 ////////////////// WS LOGIC ///////////////////
 ///////////////////////////////////////////////
 
-// TODO
-// Exercise 3: Create the WebSocket Server using the HTTP server
+
 const wsServer = new WebSocket.Server({ server });
 
-// TODO
-// Exercise 5: Respond to connection events 
-  // Exercise 6: Respond to client messages
-  // Exercise 7: Send a message back to the client, echoing the message received
-  // Exercise 8: Broadcast messages received to all other clients
+
+wsServer.on('connection', (socket) => {
+  console.log('A new connection');
+  // socket.send('Welcome to the server!'); 
+  socket.on('message', (data) => {
+    console.log(data);
+    // socket.send('message received: ' + data); 
+    broadcast(data, socket);
+  });
   
+});
+
 
 ///////////////////////////////////////////////
 ////////////// HELPER FUNCTIONS ///////////////
 ///////////////////////////////////////////////
 
 function broadcast(data, socketToOmit) {
-  // TODO
-  // Exercise 8: Implement the broadcast pattern. Exclude the emitting socket!
+  
+  wsServer.clients.forEach(connectedClient => {
+    // check if the connection is open AND is not the emitting socket. 
+    if (connectedClient.readyState === WebSocket.OPEN && connectedClient !== socketToOmit) {
+      // if so, send the broadcast message
+      connectedClient.send(data);
+    }
+  });
 }
 
 // Start the server listening on localhost:8080
