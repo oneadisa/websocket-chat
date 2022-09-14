@@ -6,4 +6,4 @@ To run this application, first open up a terminal. Then, run the command below:
 npm install
 node server.js
 ```
-# websocket-chat
+
